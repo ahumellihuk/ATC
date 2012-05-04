@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">In order to use the app you need to give access to your Twitter account. Please press the button to continue.</string>
+    <string name="app_name">Android Twitter Client</string>
+    <string name="submit">Post tweet</string>
+    <string name="message">Enter your status update</string>
+    <string name="tweet">Update a status</string>
+    <string name="timeline">Timeline</string>
+    <string name="refresh">Refresh</string>
+    <string name="choice">Please select desirable action</string>
+    <string name="back">Back</string>
+    <string name="enter">Please enter your status update</string>
+    <string name="newSearch">New Search</string>
+
+</resources>
