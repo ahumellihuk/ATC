@@ -3,18 +3,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <EditText
-            android:id="@+id/searchField"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:text="Search terms"
-            android:ems="10" >
-
-            <requestFocus />
-        </EditText>
-
         <Button
             android:id="@+id/backFromSearch"
             android:layout_width="wrap_content"
@@ -23,23 +11,46 @@
             android:layout_alignParentLeft="true"
             android:text="Back" />
 
-        <EditText
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/searchButton"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/editText1"
-            android:layout_marginTop="122dp"
-            android:ems="10" />
-
         <Button
             android:id="@+id/searchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/searchField"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="Search" />
+
+        <EditText
+            android:id="@+id/searchField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:ems="10"
+            android:hint="Search terms" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/searchField"
+            android:layout_toRightOf="@+id/usernameCheck"
+            android:ems="10"
+            android:hint="author" />
+
+        <EditText
+            android:id="@+id/hashField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/username"
+            android:layout_toRightOf="@+id/hashCheck"
+            android:ems="10"
+            android:hint="hashtag" >
+
+            <requestFocus />
+        </EditText>
 
         <CheckBox
             android:id="@+id/usernameCheck"
@@ -47,7 +58,14 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/username"
             android:layout_alignBottom="@+id/username"
+            android:text="\@" />
+
+        <CheckBox
+            android:id="@+id/hashCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:text="Username" />
+            android:layout_below="@+id/usernameCheck"
+            android:text="#" />
 
     </RelativeLayout>

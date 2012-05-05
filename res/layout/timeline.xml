@@ -26,24 +26,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:maxWidth="200dp"
             android:minHeight="80dp"
             android:minWidth="200dp"
-            android:text="Small Text"
+            android:background="@drawable/button"
+            android:textColor="#301050"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/tweet2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tweet1"
             android:gravity="right"
             android:maxWidth="200dp"
             android:minHeight="80dp"
             android:minWidth="200dp"
-            android:text="Small Text"
+            android:background="@drawable/button"
+            android:textColor="#301050"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -51,24 +55,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/tweet2"
             android:maxWidth="200dp"
             android:minHeight="80dp"
             android:minWidth="200dp"
-            android:text="Small Text"
+            android:background="@drawable/button"
+            android:textColor="#301050"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/tweet4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/tweet3"
             android:gravity="right"
             android:maxWidth="200dp"
             android:minHeight="80dp"
             android:minWidth="200dp"
-            android:text="Small Text"
+            android:background="@drawable/button"
+            android:textColor="#301050"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -76,11 +84,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@+id/tweet4"
             android:maxWidth="200dp"
             android:minHeight="80dp"
             android:minWidth="200dp"
-            android:text="Small Text"
+            android:background="@drawable/button"
+            android:textColor="#301050"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
     </RelativeLayout>

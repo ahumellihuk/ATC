@@ -1,0 +1,62 @@
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <TextView
+            android:id="@+id/tweetDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/button"
+            android:minHeight="120dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#301050" />
+
+        <Button
+            android:id="@+id/backFromDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:minWidth="100dp"
+            android:text="@string/back" />
+
+        <TextView
+            android:id="@+id/hashtag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tweetDetails"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/button"
+            android:minHeight="50dp"
+            android:minWidth="100dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#301050" />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/hashtag"
+            android:layout_alignBottom="@+id/hashtag"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button"
+            android:minHeight="50dp"
+            android:minWidth="100dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#301050" />
+
+        <Button
+            android:id="@+id/retweet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:minWidth="100dp"
+            android:text="Retweet" />
+
+    </RelativeLayout>

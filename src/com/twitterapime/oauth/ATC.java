@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TextView.BufferType;
 
 import com.twitterapime.model.MetadataSet;
 import com.twitterapime.rest.Credential;
@@ -34,7 +33,7 @@ import com.twitterapime.search.Tweet;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.ui.OAuthDialogListener;
 
-public class TwitterAPIMEAndroidOAuthSample extends Activity implements OAuthDialogListener, SearchDeviceListener {
+public class ATC extends Activity implements OAuthDialogListener, SearchDeviceListener, OnTouchListener {
 
 	private final String CONSUMER_KEY = "YP6fMhYF1QkPi0slhXiJA";
 
@@ -239,58 +238,46 @@ public class TwitterAPIMEAndroidOAuthSample extends Activity implements OAuthDia
 	
 	public void searchScreen() {
 		setContentView(R.layout.search);
-		
-		Button submit = (Button)findViewById(R.id.searchButton);
-		submit.setOnClickListener(new OnClickListener() {
+		 Button search = (Button)findViewById(R.id.searchButton);
+		 search.setOnClickListener(new OnClickListener() {
 
-			public void onClick(View arg0) {
+			public void onClick(View v) {
 				EditText field = (EditText)findViewById(R.id.searchField);
 				CheckBox usernameCheck = (CheckBox)findViewById(R.id.usernameCheck);
-				if (usernameCheck.isChecked()) {
-					EditText usernameField = (EditText)findViewById(R.id.username);
-					String username = usernameField.getText().toString();
-					SearchDevice s = SearchDevice.getInstance();
-					Query q = QueryComposer.append(QueryComposer.containAll("Java"),QueryComposer.from(username));
-					
-					try {
-						tweets = s.searchTweets(q);
-						timelineScreen();
-					} catch (IOException e) {
-						Log.w("IOException", "IOException");
-						e.printStackTrace();
-					} catch (LimitExceededException e) {
-						Log.w("LimitExceededException", "LimitExceededException");
-						e.printStackTrace();
-					}	
-				}
-				else {
-					SearchDevice s = SearchDevice.getInstance();
-					Query q = QueryComposer.containAll(field.getText().toString());
-					try {
-						tweets = s.searchTweets(q);
-						timelineScreen();
-					} catch (IOException e) {
-						Log.w("IOException", "IOException");
-						e.printStackTrace();
-					} catch (LimitExceededException e) {
-						Log.w("LimitExceededException", "LimitExceededException");
-						e.printStackTrace();
-					}	
-				}
+				EditText usernameField = (EditText)findViewById(R.id.username);
+				CheckBox hashCheck = (CheckBox)findViewById(R.id.hashCheck);
+				EditText hashtagField = (EditText)findViewById(R.id.hashField);
+				String username = usernameField.getText().toString();
+				String keywords = field.getText().toString();
+				String hashtag = hashtagField.getText().toString();
+				SearchDevice s = SearchDevice.getInstance();
+				Query q;
+				if (usernameCheck.isChecked() && !hashCheck.isChecked()) 
+					q = QueryComposer.append(QueryComposer.containAll(keywords),QueryComposer.from(username));
+				else if (hashCheck.isChecked() && !usernameCheck.isChecked())
+					q = QueryComposer.append(QueryComposer.containAll(keywords), QueryComposer.containHashtag(hashtag));
+				else if (usernameCheck.isChecked() && !hashCheck.isChecked() &&(keywords == "" || keywords == null))
+					q = QueryComposer.from(username);
+				else if (usernameCheck.isChecked() && hashCheck.isChecked()) {
+					q = QueryComposer.append(QueryComposer.from(username), QueryComposer.containAll(keywords));
+					q = QueryComposer.append(q, QueryComposer.containHashtag(hashtag));
+				}					
+				else
+					q = QueryComposer.containAll(keywords);
+				try {
+					tweets = s.searchTweets(q);
+					timelineScreen();
+				} catch (IOException e) {
+					Log.w("IOException", "IOException");
+					e.printStackTrace();
+				} catch (LimitExceededException e) {
+					Log.w("LimitExceededException", "LimitExceededException");
+					e.printStackTrace();
+				}	
+				
 			}
-			
-		});
-		
-		//Remove text from the field on touch
-		final EditText editText = (EditText)findViewById(R.id.searchField);
-		editText.setOnTouchListener(new OnTouchListener() {
-
-			public boolean onTouch(View arg0, MotionEvent arg1) {
-				editText.setText("");
-				return false;
-			}
-					
-		});
+			 
+		 });
 		
 		//Back button
 		Button back = (Button)findViewById(R.id.backFromSearch);
@@ -320,16 +307,67 @@ public class TwitterAPIMEAndroidOAuthSample extends Activity implements OAuthDia
 	public void timelineScreen() {
 		setContentView(R.layout.timeline); //App gets to this line and does not go any further	
 
-		TextView text1 = (TextView)findViewById(R.id.tweet1);
-		text1.setText((String)tweets[0].getObject(MetadataSet.TWEET_CONTENT));
-		TextView text2 = (TextView)findViewById(R.id.tweet2);
-		text2.setText((String)tweets[1].getObject(MetadataSet.TWEET_CONTENT));
-		TextView text3 = (TextView)findViewById(R.id.tweet3);
-		text3.setText((String)tweets[2].getObject(MetadataSet.TWEET_CONTENT));
-		TextView text4 = (TextView)findViewById(R.id.tweet4);
-		text4.setText((String)tweets[3].getObject(MetadataSet.TWEET_CONTENT));
-		TextView text5 = (TextView)findViewById(R.id.tweet5);
-		text5.setText((String)tweets[4].getObject(MetadataSet.TWEET_CONTENT));
+		TextView [] textFields = {(TextView)findViewById(R.id.tweet1),(TextView)findViewById(R.id.tweet2),(TextView)findViewById(R.id.tweet3),
+				(TextView)findViewById(R.id.tweet4),(TextView)findViewById(R.id.tweet5)};
+		
+		int n = tweets.length;
+		if (n>5) n=5;
+		
+		switch (n) {
+			case 0: {
+				textFields[0].setVisibility(4);
+				textFields[1].setVisibility(4);
+				textFields[2].setVisibility(4);
+				textFields[3].setVisibility(4);
+				textFields[4].setVisibility(4);
+				showMessage("Unfortunately, nothing found");
+				break;
+			}
+			case 1: {
+				textFields[0].setOnTouchListener(this);
+				textFields[1].setVisibility(4);
+				textFields[2].setVisibility(4);
+				textFields[3].setVisibility(4);
+				textFields[4].setVisibility(4);
+				break;
+			}
+			case 2: {
+				textFields[0].setOnTouchListener(this);
+				textFields[1].setOnTouchListener(this);
+				textFields[2].setVisibility(4);
+				textFields[3].setVisibility(4);
+				textFields[4].setVisibility(4);
+				break;
+			}
+			case 3: {
+				textFields[0].setOnTouchListener(this);
+				textFields[1].setOnTouchListener(this);
+				textFields[2].setOnTouchListener(this);
+				textFields[3].setVisibility(4);
+				textFields[4].setVisibility(4);
+				break;
+			}
+			case 4: {
+				textFields[0].setOnTouchListener(this);
+				textFields[1].setOnTouchListener(this);
+				textFields[2].setOnTouchListener(this);
+				textFields[3].setOnTouchListener(this);
+				textFields[4].setVisibility(4);
+				break;
+			}
+			default: {
+				textFields[0].setOnTouchListener(this);
+				textFields[1].setOnTouchListener(this);
+				textFields[2].setOnTouchListener(this);
+				textFields[3].setOnTouchListener(this);
+				textFields[4].setOnTouchListener(this);
+				break;
+			}
+		}
+		
+		for (int i=0; i<n; i++) {
+			textFields[i].setText((String)tweets[i].getObject(MetadataSet.TWEET_CONTENT));
+		}
 		
 		//Back button
 		Button back = (Button)findViewById(R.id.backFromTimeline);
@@ -347,6 +385,49 @@ public class TwitterAPIMEAndroidOAuthSample extends Activity implements OAuthDia
 			public void onClick(View v) {
 				searchScreen();
 			}
+		});
+	}
+	
+	public void detailScreen(final Tweet tweet) {
+		setContentView(R.layout.detail);
+		
+		String details = (String)tweet.getObject(MetadataSet.TWEET_CONTENT);
+		String author = (String)tweet.getObject(MetadataSet.TWEET_AUTHOR_USERNAME);
+		String hashtag = (String)tweet.getObject(MetadataSet.TWEETENTITY_HASHTAG);
+		
+		TextView tweetDetails = (TextView)findViewById(R.id.tweetDetails);
+		TextView authorView = (TextView)findViewById(R.id.author);
+		TextView hashtagView = (TextView)findViewById(R.id.hashtag);
+		tweetDetails.setText(details);
+		authorView.setText("@"+author);
+		hashtagView.setText("#"+hashtag);
+		
+		Button retweet = (Button)findViewById(R.id.retweet);
+		retweet.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				try {
+					tweeter.repost(tweet);
+					showMessage("Tweet successfully reposted!");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (LimitExceededException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+			
+		});
+		
+		//Back button
+		Button back = (Button)findViewById(R.id.backFromDetail);
+		back.setOnClickListener(new OnClickListener() {
+
+			public void onClick(View arg0) {
+				timelineScreen();
+			}
+			
 		});
 	}
 	
@@ -369,7 +450,6 @@ public class TwitterAPIMEAndroidOAuthSample extends Activity implements OAuthDia
 	 * @param tweet Found tweet
 	 */ 
 	public void tweetFound(Tweet tweet) {
-		String content = (String)tweet.getObject(MetadataSet.TWEET_CONTENT);
 		tweets[i] = tweet;
 		i++;
 	}
@@ -388,6 +468,19 @@ public class TwitterAPIMEAndroidOAuthSample extends Activity implements OAuthDia
 				});
 		//
 		builder.create().show();
+	}
+	public boolean onTouch(View v, MotionEvent arg1) {
+		if (v.equals(findViewById(R.id.tweet1)))
+			detailScreen(tweets[0]);
+		else if (v.equals(findViewById(R.id.tweet2)))
+			detailScreen(tweets[1]);
+		else if (v.equals(findViewById(R.id.tweet3)))
+			detailScreen(tweets[2]);
+		else if (v.equals(findViewById(R.id.tweet4)))
+			detailScreen(tweets[3]);
+		else if (v.equals(findViewById(R.id.tweet5)))
+			detailScreen(tweets[4]);
+		return false;
 	}
 
 }

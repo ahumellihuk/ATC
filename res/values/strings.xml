@@ -6,11 +6,12 @@
     <string name="submit">Post tweet</string>
     <string name="message">Enter your status update</string>
     <string name="tweet">Update a status</string>
-    <string name="timeline">Timeline</string>
+    <string name="timeline">Home Timeline - not working</string>
     <string name="refresh">Refresh</string>
     <string name="choice">Please select desirable action</string>
     <string name="back">Back</string>
     <string name="enter">Please enter your status update</string>
     <string name="newSearch">New Search</string>
+    <string name="at">\@</string>
 
 </resources>
