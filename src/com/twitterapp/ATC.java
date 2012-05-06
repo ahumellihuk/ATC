@@ -25,7 +25,11 @@ import com.twitterapime.search.SearchDeviceListener;
 import com.twitterapime.search.Tweet;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.ui.OAuthDialogListener;
-
+/**
+ * Main Activity
+ * @author AHuMELLIHuK
+ *
+ */
 public class ATC extends Activity implements OAuthDialogListener {
 	
 	private final int ACTIVITY_END = -1;	
