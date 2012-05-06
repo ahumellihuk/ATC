@@ -12,6 +12,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".TimelineActivity"></activity>
+        <activity android:name=".SearchScreenActivity"></activity>
+        <activity android:name=".DetailsScreen"></activity>
+        <activity android:name=".TweetActivity"></activity>
 
     </application>
     <uses-sdk android:minSdkVersion="8" />

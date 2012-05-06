@@ -6,7 +6,7 @@
     <string name="submit">Post tweet</string>
     <string name="message">Enter your status update</string>
     <string name="tweet">Update a status</string>
-    <string name="timeline">Home Timeline - not working</string>
+    <string name="timeline">Home Timeline</string>
     <string name="refresh">Refresh</string>
     <string name="choice">Please select desirable action</string>
     <string name="back">Back</string>
