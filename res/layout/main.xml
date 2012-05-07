@@ -39,6 +39,6 @@
             android:layout_alignLeft="@+id/goToTweet"
             android:layout_below="@+id/goToTweet"
             android:minWidth="200dp"
-            android:text="Search" />
+            android:text="@string/search" />
 
     </RelativeLayout>

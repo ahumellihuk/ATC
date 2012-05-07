@@ -10,7 +10,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:text="Back" />
+            android:text="@string/back" />
 
         <Button
             android:id="@+id/searchButton"
@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:text="Search" />
+            android:text="@string/search" />
 
         <EditText
             android:id="@+id/searchField"
@@ -28,7 +28,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:ems="10"
-            android:hint="Search terms" />
+            android:hint="@string/searchTerms" />
 
         <EditText
             android:id="@+id/username"
@@ -38,7 +38,7 @@
             android:layout_below="@+id/searchField"
             android:layout_toRightOf="@+id/usernameCheck"
             android:ems="10"
-            android:hint="author" />
+            android:hint="@string/author" />
 
         <EditText
             android:id="@+id/hashField"
@@ -48,7 +48,7 @@
             android:layout_below="@+id/username"
             android:layout_toRightOf="@+id/hashCheck"
             android:ems="10"
-            android:hint="hashtag" >
+            android:hint="@string/hashtag" >
 
             <requestFocus />
         </EditText>
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/username"
             android:layout_alignBottom="@+id/username"
-            android:text="\@" />
+            android:text="@string/at" />
 
         <CheckBox
             android:id="@+id/hashCheck"
@@ -67,6 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/usernameCheck"
-            android:text="#" />
+            android:text="@string/hash" />
 
     </RelativeLayout>

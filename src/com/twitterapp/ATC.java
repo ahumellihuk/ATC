@@ -57,7 +57,7 @@ public class ATC extends Activity implements OAuthDialogListener {
         if (accessToken == null) {
 	        setContentView(R.layout.login);
 	        
-	        Button login = (Button)findViewById(R.id.button1);
+	        Button login = (Button)findViewById(R.id.loginButton);
 	        login.setOnClickListener(new OnClickListener() {
 	        	public void onClick(View v) {  
 	        		launchWeb();
@@ -188,19 +188,21 @@ public class ATC extends Activity implements OAuthDialogListener {
 	 * Loads five latest tweets from home timeline
 	 */
 	public void loadTimeline() {
+		//Remove first three lines in order to run on Android API level < 12
 		setContentView(R.layout.load);
 		ProgressBar loading = (ProgressBar)findViewById(R.id.loading);
 		loading.animate();
-		Query query = QueryComposer.count(5);
+		Query query = QueryComposer.count(20);
 		timeline.startGetHomeTweets(query, new SearchDeviceListener() {
-			Tweet[] tweetArray = new Tweet[5];
+			Tweet[] tweetArray = new Tweet[20];
 			int i = 0;
 			/**
 			 * Executed at the end of search
 			 */
 			public void searchCompleted() {
-				Intent i = new Intent(ATC.this, TimelineActivity.class);
+				Intent i = new Intent(ATC.this, DisplayListActivity.class);
 				i.putExtra("tweet", tweetArray);
+				i.putExtra("request", TIMELINE_ACTIVITY);
 				startActivityForResult(i, TIMELINE_ACTIVITY);
 			}
 			
@@ -235,12 +237,7 @@ public class ATC extends Activity implements OAuthDialogListener {
 				break;
 			}
 			case SEARCH_ACTIVITY: {
-				if (resultCode == ACTIVITY_REFRESH) {
-					Intent i = new Intent(ATC.this, SearchScreenActivity.class);
-					startActivityForResult(i, SEARCH_ACTIVITY);	
-				}
-				else if (resultCode == ACTIVITY_END)
-					mainScreen();
+				mainScreen();
 				break;
 			}
 			case TWEET_ACTIVITY: {

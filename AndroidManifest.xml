@@ -3,7 +3,8 @@
       package="com.twitterapp"
       android:versionCode="1"
       android:versionName="1.0">
-      <uses-sdk android:minSdkVersion="8" />
+      <uses-sdk android:minSdkVersion="8" 
+          		android:targetSdkVersion="15"/>
       <uses-permission android:name="android.permission.INTERNET" />
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".ATC"
@@ -13,7 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TimelineActivity"></activity>
+        <activity android:name=".DisplayListActivity"></activity>
         <activity android:name=".SearchScreenActivity"></activity>
         <activity android:name=".DetailsScreen"></activity>
         <activity android:name="com.twitterapp.TweetActivity"></activity>

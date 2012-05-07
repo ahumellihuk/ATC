@@ -11,7 +11,13 @@
     <string name="choice">Please select desirable action</string>
     <string name="back">Back</string>
     <string name="enter">Please enter your status update</string>
-    <string name="newSearch">New Search</string>
     <string name="at">\@</string>
+    <string name="search">Search</string>
+    <string name="searchTerms">Search Terms</string>
+    <string name="login">Login</string>
+    <string name="hashtag">hashtag</string>
+    <string name="hash">#</string>
+    <string name="author">author</string>
+    <string name="retweet">Retweet</string>
 
 </resources>
