@@ -26,7 +26,7 @@
             android:text="@string/back" />
 
         <TextView
-            android:id="@+id/hashtag"
+            android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -35,19 +35,7 @@
             android:background="@drawable/button"
             android:minHeight="50dp"
             android:minWidth="100dp"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="#301050" />
-
-        <TextView
-            android:id="@+id/author"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/hashtag"
-            android:layout_alignBottom="@+id/hashtag"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/button"
-            android:minHeight="50dp"
-            android:minWidth="100dp"
+            android:textSize="6pt"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#301050" />
 
@@ -59,5 +47,17 @@
             android:layout_alignParentRight="true"
             android:minWidth="100dp"
             android:text="@string/retweet" />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/date"
+            android:background="@drawable/button"
+            android:minHeight="50dp"
+            android:minWidth="100dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#301050" />
 
     </RelativeLayout>

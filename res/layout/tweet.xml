@@ -10,9 +10,10 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:hint="@string/enter"
             android:ems="10"
+            android:hint="@string/enter"
             android:inputType="textMultiLine"
+            android:maxLength="140"
             android:minHeight="100dp" />
 
         <Button

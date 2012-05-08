@@ -1,22 +1,14 @@
 package com.twitterapp;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.twitterapime.search.LimitExceededException;
-import com.twitterapime.search.Query;
-import com.twitterapime.search.QueryComposer;
-import com.twitterapime.search.SearchDevice;
-import com.twitterapime.search.Tweet;
 /**
  * Activity displays search screen
  * @author Dmitri Samoilov *
@@ -24,10 +16,13 @@ import com.twitterapime.search.Tweet;
 public class SearchScreenActivity extends Activity{
 	
 	protected static final int SEARCH_ACTIVITY = 1;
+	
+	private DataHandler dataHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dataHandler = (DataHandler)this.getApplication();
 		searchScreen();
 	}
 	/**
@@ -45,36 +40,25 @@ public class SearchScreenActivity extends Activity{
 				EditText usernameField = (EditText)findViewById(R.id.username);
 				CheckBox hashCheck = (CheckBox)findViewById(R.id.hashCheck);
 				EditText hashtagField = (EditText)findViewById(R.id.hashField);
-				String username = usernameField.getText().toString();
+				String author = usernameField.getText().toString();
 				String keywords = field.getText().toString();
 				String hashtag = hashtagField.getText().toString();
-				SearchDevice s = SearchDevice.getInstance();
-				Query q;
 				if (usernameCheck.isChecked() && !hashCheck.isChecked()) 
-					q = QueryComposer.append(QueryComposer.containAll(keywords),QueryComposer.from(username));
+					dataHandler.searchKeywordsAuthor(keywords, author);
 				else if (hashCheck.isChecked() && !usernameCheck.isChecked())
-					q = QueryComposer.append(QueryComposer.containAll(keywords), QueryComposer.containHashtag(hashtag));
+					dataHandler.searchKeywordsHashtag(keywords, hashtag);
 				else if (usernameCheck.isChecked() && !hashCheck.isChecked() &&(keywords == "" || keywords == null))
-					q = QueryComposer.from(username);
-				else if (usernameCheck.isChecked() && hashCheck.isChecked()) {
-					q = QueryComposer.append(QueryComposer.from(username), QueryComposer.containAll(keywords));
-					q = QueryComposer.append(q, QueryComposer.containHashtag(hashtag));
-				}					
+					dataHandler.searchAuthor(author);
+				else if (!usernameCheck.isChecked() && hashCheck.isChecked() &&(keywords == "" || keywords == null))
+					dataHandler.searchHashtag(hashtag);
+				else if (usernameCheck.isChecked() && hashCheck.isChecked())
+					dataHandler.searchAll(keywords, author, hashtag);		
 				else
-					q = QueryComposer.containAll(keywords);
-				try {
-					Tweet[] tweets = s.searchTweets(q);
-					Intent i = new Intent(SearchScreenActivity.this, DisplayListActivity.class);
-					i.putExtra("tweet", tweets);
-					i.putExtra("request", SEARCH_ACTIVITY);
-					startActivityForResult(i, SEARCH_ACTIVITY);
-				} catch (IOException e) {
-					Log.w("IOException", "IOException");
-					e.printStackTrace();
-				} catch (LimitExceededException e) {
-					Log.w("LimitExceededException", "LimitExceededException");
-					e.printStackTrace();
-				}	
+					dataHandler.searchKeywords(keywords);
+				Intent i = new Intent(SearchScreenActivity.this, DisplayListActivity.class);
+				i.putExtra("request", SEARCH_ACTIVITY);
+				startActivityForResult(i, SEARCH_ACTIVITY);
+					
 				
 			}
 			 
@@ -107,5 +91,14 @@ public class SearchScreenActivity extends Activity{
 		    	finish();
 			}
 		}		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		
+		Intent mIntent = new Intent();
+    	setResult(RESULT_OK, mIntent);
+    	finish();
+    	super.onBackPressed();
 	}
 }

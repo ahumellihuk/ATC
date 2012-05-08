@@ -1,20 +1,13 @@
 package com.twitterapp;
 
-import java.io.IOException;
 
-import com.twitterapp.R;
-import com.twitterapime.rest.Credential;
-import com.twitterapime.rest.TweetER;
-import com.twitterapime.rest.UserAccountManager;
-import com.twitterapime.search.LimitExceededException;
 import com.twitterapime.search.Tweet;
-import com.twitterapime.xauth.Token;
+import com.twitterapp.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,35 +19,15 @@ import android.widget.EditText;
  * @author Dmitri Samoilov *
  */
 public class TweetActivity extends Activity {
-
-	private final String CONSUMER_KEY = "YP6fMhYF1QkPi0slhXiJA";
-	private final String CONSUMER_SECRET = "FWi27hEYJSTzpEq6ZxddMODNKOH9Qs4SyTL2DPbHss";
-	/**Authorised instance of TweetER*/
-	private TweetER tweeter;
 	
+	private DataHandler dataHandler;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		dataHandler = (DataHandler)this.getApplication();
 		
 		setContentView(R.layout.tweet);
-		
-		SharedPreferences prefs = getSharedPreferences("ATC", MODE_PRIVATE);
-    	String token = prefs.getString("AccessToken", null);
-    	String secret = prefs.getString("AccessSecret", null);
-    	Token accessToken = null;
-    	if (token != null && secret != null) {
-    		accessToken = new Token(token, secret);
-    	}
-    	Credential c = new Credential(CONSUMER_KEY, CONSUMER_SECRET, accessToken);
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		try {
-			if (uam.verifyCredential()) {
-				tweeter = TweetER.getInstance(uam);
-			}
-		} catch (Exception e) {
-			showMessage("Error authorising.");
-		} 
 		
 		//Submit button
 		Button submit = (Button)findViewById(R.id.submitTweet);
@@ -64,16 +37,12 @@ public class TweetActivity extends Activity {
 
 				EditText textField = (EditText)findViewById(R.id.tweetField);
 				String tweet = textField.getText().toString();
-				try {
-					tweeter.post(new Tweet(tweet));
+				boolean response = dataHandler.post(new Tweet(tweet));
+				if (response) {
 					showMessage("Tweet posted successfully!");
 					textField.setText(R.string.message);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (LimitExceededException e) {
-					showMessage("Please enter no more than 140 symbols!");
-					e.printStackTrace();
 				}
+				else showMessage("Failed to post tweet");
 			}
 			
 		});

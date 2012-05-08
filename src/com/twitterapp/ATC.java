@@ -6,23 +6,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
 import com.twitterapp.R;
-import com.twitterapime.rest.Credential;
-import com.twitterapime.rest.Timeline;
-import com.twitterapime.rest.UserAccountManager;
-import com.twitterapime.search.Query;
-import com.twitterapime.search.QueryComposer;
-import com.twitterapime.search.SearchDeviceListener;
-import com.twitterapime.search.Tweet;
 import com.twitterapime.xauth.Token;
 import com.twitterapime.xauth.ui.OAuthDialogListener;
 /**
@@ -39,13 +30,10 @@ public class ATC extends Activity implements OAuthDialogListener {
 	private final int TWEET_ACTIVITY = 2;
 
 	private final String CONSUMER_KEY = "YP6fMhYF1QkPi0slhXiJA";
-
 	private final String CONSUMER_SECRET = "FWi27hEYJSTzpEq6ZxddMODNKOH9Qs4SyTL2DPbHss";
-
 	private final String CALLBACK_URL = "http://ahumellihuk.com";
 
-	/**Authorised instance of Timeline*/
-	private Timeline timeline;
+	private DataHandler dataHandler;
 
 	/**
      * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -53,8 +41,8 @@ public class ATC extends Activity implements OAuthDialogListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Token accessToken = getToken();
-        if (accessToken == null) {
+        dataHandler = (DataHandler)this.getApplication();
+        if (!dataHandler.checkToken()) {
 	        setContentView(R.layout.login);
 	        
 	        Button login = (Button)findViewById(R.id.loginButton);
@@ -64,44 +52,8 @@ public class ATC extends Activity implements OAuthDialogListener {
 	        	}  
 	        });
         }
-        else {        	
-        	Credential c = new Credential(CONSUMER_KEY, CONSUMER_SECRET, accessToken);
-    		UserAccountManager uam = UserAccountManager.getInstance(c);
-    		try {
-    			if (uam.verifyCredential()) {
-    				timeline = Timeline.getInstance(uam);
-    				mainScreen();
-    			}
-    		} catch (Exception e) {
-    			showMessage("Error authorising.");
-    		} 
-        }
-    }
-    /**
-     * Retrieves access token from SharedPreferences
-     */
-    private Token getToken() {
-    	SharedPreferences prefs = getSharedPreferences("ATC", MODE_PRIVATE);
-    	String token = prefs.getString("AccessToken", null);
-    	String secret = prefs.getString("AccessSecret", null);
-    	if (token != null && secret != null) {
-    		Token accessToken = new Token(token, secret);
-    		return accessToken;
-    	}
-    	else return null;
-    }
-    
-    /**
-     * Stores the existing access token in SharedPreferences
-     * @param accessToken User Access Token
-     */
-    private void storeToken(Token accessToken) {
-    	SharedPreferences prefs = getSharedPreferences("ATC", MODE_PRIVATE);
-    	SharedPreferences.Editor editor = prefs.edit();
-    	editor.putString("AccessToken", accessToken.getToken());
-    	editor.putString("AccessSecret", accessToken.getSecret());
-    	editor.commit();
-    }
+        else mainScreen();
+    }    
     
     /**
      * Launches webView to authorise user account
@@ -125,18 +77,8 @@ public class ATC extends Activity implements OAuthDialogListener {
 	 * @see com.twitterapime.xauth.ui.OAuthDialogListener#onAuthorize(com.twitterapime.xauth.Token)
 	 */
 	public void onAuthorize(Token accessToken) {
-		storeToken(accessToken);
-		Credential c = new Credential(CONSUMER_KEY, CONSUMER_SECRET, accessToken);
-		UserAccountManager uam = UserAccountManager.getInstance(c);
-		//
-		try {
-			if (uam.verifyCredential()) {
-				timeline = Timeline.getInstance(uam);
-				mainScreen();
-			}
-		} catch (Exception e) {
-			showMessage("Error authorising.");
-		}
+		dataHandler.storeToken(accessToken);
+		mainScreen();		
 	}
 
 	/**
@@ -171,7 +113,13 @@ public class ATC extends Activity implements OAuthDialogListener {
 		Button second = (Button)findViewById(R.id.goToTimeline);
 		second.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				loadTimeline();				
+				//setContentView(R.layout.load);
+				//ProgressBar loading = (ProgressBar)findViewById(R.id.loading);
+				//loading.animate();
+				dataHandler.loadTimeline();
+				Intent i = new Intent(ATC.this, DisplayListActivity.class);
+				i.putExtra("request", TIMELINE_ACTIVITY);
+				startActivityForResult(i, TIMELINE_ACTIVITY);				
 			}			
 		});
 		//Search button
@@ -182,46 +130,6 @@ public class ATC extends Activity implements OAuthDialogListener {
 				startActivityForResult(i, SEARCH_ACTIVITY);			
 			}			
 		});
-	}
-
-	/**
-	 * Loads five latest tweets from home timeline
-	 */
-	public void loadTimeline() {
-		//Remove first three lines in order to run on Android API level < 12
-		setContentView(R.layout.load);
-		ProgressBar loading = (ProgressBar)findViewById(R.id.loading);
-		loading.animate();
-		Query query = QueryComposer.count(20);
-		timeline.startGetHomeTweets(query, new SearchDeviceListener() {
-			Tweet[] tweetArray = new Tweet[20];
-			int i = 0;
-			/**
-			 * Executed at the end of search
-			 */
-			public void searchCompleted() {
-				Intent i = new Intent(ATC.this, DisplayListActivity.class);
-				i.putExtra("tweet", tweetArray);
-				i.putExtra("request", TIMELINE_ACTIVITY);
-				startActivityForResult(i, TIMELINE_ACTIVITY);
-			}
-			
-			/**
-			 * Executed if search is failed
-			 */
-			public void searchFailed(Throwable arg0) {
-				showMessage("Search failed!");		
-			}
-			
-			/**
-			 * Executed when a tweet is found
-			 * @param tweet Found tweet
-			 */ 
-			public void tweetFound(Tweet tweet) {
-				tweetArray[i] = tweet;
-				i++;
-			}
-		});
 	}	
 
 	@Override
@@ -230,8 +138,11 @@ public class ATC extends Activity implements OAuthDialogListener {
 		
 		switch (requestCode) {
 			case TIMELINE_ACTIVITY: {
-				if (resultCode == ACTIVITY_REFRESH)
-					loadTimeline();
+				if (resultCode == ACTIVITY_REFRESH) {
+					Intent i = new Intent(ATC.this, DisplayListActivity.class);
+					i.putExtra("request", TIMELINE_ACTIVITY);
+					startActivityForResult(i, TIMELINE_ACTIVITY);
+				}
 				else if (resultCode == ACTIVITY_END)
 					mainScreen();
 				break;
@@ -260,6 +171,23 @@ public class ATC extends Activity implements OAuthDialogListener {
 					}
 				});
 		//
+		builder.create().show();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Do you want to log in with another account?").setCancelable(true)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						launchWeb();
+					}
+				})
+				.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
 		builder.create().show();
 	}
 }

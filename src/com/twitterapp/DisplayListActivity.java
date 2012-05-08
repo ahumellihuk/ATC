@@ -25,27 +25,23 @@ public class DisplayListActivity extends ListActivity {
 	/**Request code to determine button text*/
 	private int requestCode;
 	
+	private DataHandler dataHandler;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.list);
 		ListView list = (ListView)findViewById(android.R.id.list);
 
+		dataHandler = (DataHandler)this.getApplication();
 		
-		Bundle extras = getIntent().getExtras();
-		requestCode = extras.getInt("request");
-		if (extras != null) {
-			Object[] passedTweets = (Object[])extras.get("tweet");
-			int n = passedTweets.length;
-			tweetsContent = new String[n];			
-			tweets = new Tweet[n];
-			for (int i=0; i<n; i++) {
-				if (passedTweets[i] != null)
-					if (passedTweets[i] instanceof Tweet) {
-						tweets[i] = (Tweet)passedTweets[i];
-					}
-					tweetsContent[i] = (String)tweets[i].getObject(MetadataSet.TWEET_CONTENT);
-			}
+		while (!dataHandler.loaded) {
+		}
+			
+		tweets = dataHandler.getTweets();
+		tweetsContent = new String[tweets.length];
+		for (int i=0; i<tweets.length; i++) {
+			tweetsContent[i] = (String)tweets[i].getObject(MetadataSet.TWEET_CONTENT);
 		}
 		
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, tweetsContent));
@@ -55,7 +51,7 @@ public class DisplayListActivity extends ListActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				Intent i = new Intent(DisplayListActivity.this, DetailsScreen.class);
-				i.putExtra("tweet", tweets[(int) arg3]);
+				i.putExtra("tweet", (int)arg3);
 				startActivityForResult(i, 0);
 			}
 			
@@ -87,5 +83,16 @@ public class DisplayListActivity extends ListActivity {
 			
 		});
 	}
+
+	@Override
+	public void onBackPressed() {
+		
+		Intent mIntent = new Intent();
+    	setResult(RESULT_OK, mIntent);
+    	finish();
+    	super.onBackPressed();
+	}
+	
+	
 
 }
