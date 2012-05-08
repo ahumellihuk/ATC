@@ -3,7 +3,9 @@ package com.twitterapp;
 import java.io.IOException;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 import com.twitterapime.rest.Credential;
@@ -56,6 +58,14 @@ public class DataHandler extends Application{
 			
 		}
 	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    if (cm.getActiveNetworkInfo() != null)
+	    	return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+	    else return false;
+	}
 
 	/**
      * Stores the existing access token in SharedPreferences
@@ -90,10 +100,9 @@ public class DataHandler extends Application{
     }
     
     /**
-	 * Loads five latest tweets from home timeline
+	 * Loads latest tweets from home timeline
 	 */
 	public void loadTimeline() {
-		//Remove first three lines in order to run on Android API level < 12
 		tweets = new Tweet[20];
 		loaded = false;
 		Query query = QueryComposer.count(20);

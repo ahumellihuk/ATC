@@ -4,16 +4,15 @@ import impl.android.com.twitterapime.xauth.ui.WebViewOAuthDialogWrapper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.twitterapp.R;
 import com.twitterapime.xauth.Token;
@@ -43,8 +42,8 @@ public class ATC extends Activity implements OAuthDialogListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isOnline()) {
-	        dataHandler = (DataHandler)this.getApplication();
+        dataHandler = (DataHandler)this.getApplication();
+        if (dataHandler.isOnline()) {	        
 	        if (!dataHandler.checkToken()) {
 		        setContentView(R.layout.login);
 		        
@@ -128,21 +127,29 @@ public class ATC extends Activity implements OAuthDialogListener {
 		Button second = (Button)findViewById(R.id.goToTimeline);
 		second.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				//setContentView(R.layout.load);
-				//ProgressBar loading = (ProgressBar)findViewById(R.id.loading);
-				//loading.animate();
-				dataHandler.loadTimeline();
-				Intent i = new Intent(ATC.this, DisplayListActivity.class);
-				i.putExtra("request", TIMELINE_ACTIVITY);
-				startActivityForResult(i, TIMELINE_ACTIVITY);				
+				if (dataHandler.isOnline()) {
+					dataHandler.loadTimeline();
+					setContentView(R.layout.load);
+					ProgressBar loading = (ProgressBar)findViewById(R.id.loading);
+					loading.setIndeterminate(true);		
+					Intent i = new Intent(ATC.this, DisplayListActivity.class);
+					i.putExtra("request", TIMELINE_ACTIVITY);
+					startActivityForResult(i, TIMELINE_ACTIVITY);
+				}
+				else showMessage("No Internet Connection!");
+								
 			}			
 		});
 		//Search button
 		Button third = (Button)findViewById(R.id.goToSearch);
 		third.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				Intent i = new Intent(ATC.this, SearchScreenActivity.class);
-				startActivityForResult(i, SEARCH_ACTIVITY);			
+				if (dataHandler.isOnline()) {
+					Intent i = new Intent(ATC.this, SearchScreenActivity.class);
+					startActivityForResult(i, SEARCH_ACTIVITY);	
+				}
+				else showMessage("No Internet Connection!");
+						
 			}			
 		});
 	}	
@@ -206,13 +213,7 @@ public class ATC extends Activity implements OAuthDialogListener {
 		builder.create().show();
 	}
 	
-	public boolean isOnline() {
-	    ConnectivityManager cm =
-	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	    if (cm.getActiveNetworkInfo() != null)
-	    	return cm.getActiveNetworkInfo().isConnectedOrConnecting();
-	    else return false;
-	}
+	
 	
 	@Override
 	protected void onDestroy() {

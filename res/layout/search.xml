@@ -1,5 +1,5 @@
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" 
         android:background="#FFFFFF">
@@ -11,14 +11,6 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:text="@string/back" />
-
-        <Button
-            android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="@string/search" />
 
         <EditText
             android:id="@+id/searchField"
@@ -44,29 +36,36 @@
             android:id="@+id/hashField"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/username"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/username"
-            android:layout_toRightOf="@+id/hashCheck"
             android:ems="10"
             android:hint="@string/hashtag" >
 
-            <requestFocus />
         </EditText>
 
         <CheckBox
             android:id="@+id/usernameCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/username"
             android:layout_alignBottom="@+id/username"
+            android:layout_alignParentLeft="true"
             android:text="@string/at" />
 
         <CheckBox
             android:id="@+id/hashCheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/hashField"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/usernameCheck"
             android:text="@string/hash" />
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hashField"
+            android:layout_centerHorizontal="true"
+            android:text="@string/search" />
 
     </RelativeLayout>

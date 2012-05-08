@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -62,7 +64,9 @@ public class DetailsScreen extends Activity {
 		retweet.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
-				dataHandler.retweet(tweet);			
+				if (dataHandler.isOnline())
+					dataHandler.retweet(tweet);
+				else showMessage("No Internet Connection!");
 			}
 			
 		});
@@ -87,6 +91,22 @@ public class DetailsScreen extends Activity {
     	setResult(RESULT_OK, mIntent);
     	finish();
     	super.onBackPressed();
+	}
+	
+	/**
+	 * Shows a dialog window
+	 * @param msg Text passed to window
+	 */
+	private void showMessage(String msg) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(msg).setCancelable(false)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		//
+		builder.create().show();
 	}
 
 }

@@ -1,6 +1,8 @@
 package com.twitterapp;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +36,10 @@ public class DisplayListActivity extends ListActivity {
 		ListView list = (ListView)findViewById(android.R.id.list);
 
 		dataHandler = (DataHandler)this.getApplication();
+		
+		Bundle extras = getIntent().getExtras();
+		if (extras != null)
+			requestCode = extras.getInt("request");
 		
 		while (!dataHandler.loaded) {
 		}
@@ -76,9 +82,13 @@ public class DisplayListActivity extends ListActivity {
 		refresh.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
-				Intent mIntent = new Intent();
-		    	setResult(RESULT_CANCELED, mIntent);
-		    	finish();
+				if (dataHandler.isOnline()) {
+					Intent mIntent = new Intent();
+					setResult(RESULT_CANCELED, mIntent);
+					finish();
+				}
+				else showMessage("No Internet Connection!");
+				
 			}
 			
 		});
@@ -93,6 +103,20 @@ public class DisplayListActivity extends ListActivity {
     	super.onBackPressed();
 	}
 	
-	
+	/**
+	 * Shows a dialog window
+	 * @param msg Text passed to window
+	 */
+	private void showMessage(String msg) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(msg).setCancelable(false)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		//
+		builder.create().show();
+	}
 
 }

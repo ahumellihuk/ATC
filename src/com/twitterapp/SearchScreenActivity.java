@@ -1,6 +1,8 @@
 package com.twitterapp;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -55,11 +57,12 @@ public class SearchScreenActivity extends Activity{
 					dataHandler.searchAll(keywords, author, hashtag);		
 				else
 					dataHandler.searchKeywords(keywords);
-				Intent i = new Intent(SearchScreenActivity.this, DisplayListActivity.class);
-				i.putExtra("request", SEARCH_ACTIVITY);
-				startActivityForResult(i, SEARCH_ACTIVITY);
-					
-				
+				if (dataHandler.isOnline()) {
+					Intent i = new Intent(SearchScreenActivity.this, DisplayListActivity.class);
+					i.putExtra("request", SEARCH_ACTIVITY);
+					startActivityForResult(i, SEARCH_ACTIVITY);	
+				}
+				else showMessage("No Internet Connection!");							
 			}
 			 
 		 });
@@ -100,5 +103,21 @@ public class SearchScreenActivity extends Activity{
     	setResult(RESULT_OK, mIntent);
     	finish();
     	super.onBackPressed();
+	}
+	
+	/**
+	 * Shows a dialog window
+	 * @param msg Text passed to window
+	 */
+	private void showMessage(String msg) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(msg).setCancelable(false)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+		//
+		builder.create().show();
 	}
 }
