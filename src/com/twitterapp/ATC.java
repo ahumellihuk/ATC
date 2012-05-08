@@ -4,8 +4,10 @@ import impl.android.com.twitterapime.xauth.ui.WebViewOAuthDialogWrapper;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import android.view.View;
@@ -41,21 +43,34 @@ public class ATC extends Activity implements OAuthDialogListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dataHandler = (DataHandler)this.getApplication();
-        if (!dataHandler.checkToken()) {
-	        setContentView(R.layout.login);
-	        
-	        Button login = (Button)findViewById(R.id.loginButton);
-	        login.setOnClickListener(new OnClickListener() {
-	        	public void onClick(View v) {  
-	        		launchWeb();
-	        	}  
-	        });
+        if (isOnline()) {
+	        dataHandler = (DataHandler)this.getApplication();
+	        if (!dataHandler.checkToken()) {
+		        setContentView(R.layout.login);
+		        
+		        Button login = (Button)findViewById(R.id.loginButton);
+		        login.setOnClickListener(new OnClickListener() {
+		        	public void onClick(View v) {  
+		        		launchWeb();
+		        	}  
+		        });
+	        }
+	        else mainScreen();
         }
-        else mainScreen();
+        else {
+        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    		builder.setMessage("No Internet Connection!").setCancelable(false)
+    				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+    					public void onClick(DialogInterface dialog, int id) {
+    						finish();
+    					}
+    				});
+    		builder.create().show();
+        	
+        }
     }    
-    
-    /**
+
+	/**
      * Launches webView to authorise user account
      */
     public void launchWeb() {
@@ -189,5 +204,19 @@ public class ATC extends Activity implements OAuthDialogListener {
 					}
 				});
 		builder.create().show();
+	}
+	
+	public boolean isOnline() {
+	    ConnectivityManager cm =
+	        (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    if (cm.getActiveNetworkInfo() != null)
+	    	return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+	    else return false;
+	}
+	
+	@Override
+	protected void onDestroy() {
+	   	System.runFinalizersOnExit(true);
+		super.onDestroy();
 	}
 }
