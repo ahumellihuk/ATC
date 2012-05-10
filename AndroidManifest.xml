@@ -19,5 +19,6 @@
         <activity android:name=".SearchScreenActivity"></activity>
         <activity android:name=".DetailsScreen"></activity>
         <activity android:name="com.twitterapp.TweetActivity"></activity>
+        <activity android:name=".UserViewActivity"></activity>
     </application>
 </manifest> 

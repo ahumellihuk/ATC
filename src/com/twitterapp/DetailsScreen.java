@@ -24,6 +24,7 @@ public class DetailsScreen extends Activity {
 	/**Current tweet*/
 	private Tweet tweet;
 	protected DataHandler dataHandler;
+	private boolean noAuthor;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +38,14 @@ public class DetailsScreen extends Activity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			int n = extras.getInt("tweet");
+			noAuthor = extras.getBoolean("noAuthor");
 			tweet = dataHandler.getTweets()[n];
 		}
 		
 		//Display Tweet
 		String details = (String)tweet.getObject(MetadataSet.TWEET_CONTENT);
-		String author = (String)tweet.getObject(MetadataSet.TWEET_AUTHOR_USERNAME);
-		String stringDate = (String)tweet.getObject(MetadataSet.TWEET_PUBLISH_DATE);
+		final String author = (String)tweet.getObject(MetadataSet.TWEET_AUTHOR_USERNAME);
+		final String stringDate = (String)tweet.getObject(MetadataSet.TWEET_PUBLISH_DATE);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy 'at' hh:mm a");
 		Long longDate = Long.parseLong(stringDate);
@@ -58,6 +60,20 @@ public class DetailsScreen extends Activity {
 			authorView.setText("@"+author);
 		else authorView.setText("No author");
 		dateView.setText(formatter.format(calendar.getTime()));
+		
+		authorView.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				if (dataHandler.isOnline()) {
+					if (author != null && author != "No author" && author != "" && !noAuthor) {
+						dataHandler.doUserSearch(author);
+						Intent i = new Intent(DetailsScreen.this, UserViewActivity.class);
+						i.putExtra("author", author);
+						startActivityForResult(i, 0);
+					}
+				}
+				else showMessage("No Internet Connection!");
+			}
+		});
 		
 		//Retweet Button
 		Button retweet = (Button)findViewById(R.id.retweet);

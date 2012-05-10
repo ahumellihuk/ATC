@@ -20,7 +20,9 @@ public final class R {
         public static final int backFromList=0x7f050005;
         public static final int backFromSearch=0x7f05000d;
         public static final int backFromTweet=0x7f050016;
+        public static final int backFromUser=0x7f050017;
         public static final int date=0x7f050002;
+        public static final int followToggle=0x7f050018;
         public static final int goToSearch=0x7f05000c;
         public static final int goToTimeline=0x7f05000b;
         public static final int goToTweet=0x7f050009;
@@ -36,6 +38,7 @@ public final class R {
         public static final int textView1=0x7f05000a;
         public static final int tweetDetails=0x7f050000;
         public static final int tweetField=0x7f050014;
+        public static final int user=0x7f050019;
         public static final int username=0x7f05000f;
         public static final int usernameCheck=0x7f050010;
     }
@@ -48,6 +51,7 @@ public final class R {
         public static final int main=0x7f030005;
         public static final int search=0x7f030006;
         public static final int tweet=0x7f030007;
+        public static final int userview=0x7f030008;
     }
     public static final class string {
         public static final int app_name=0x7f040001;

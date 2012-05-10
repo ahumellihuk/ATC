@@ -26,10 +26,13 @@ public class DataHandler extends Application{
 	private TweetER tweeter;
 	private Timeline timeline;
 	private Tweet[] tweets;
+	private Tweet[] userTweets;
 	public boolean loaded;
+	private UserAccountManager uam;
 	
 	private final String CONSUMER_KEY = "YP6fMhYF1QkPi0slhXiJA";
 	private final String CONSUMER_SECRET = "FWi27hEYJSTzpEq6ZxddMODNKOH9Qs4SyTL2DPbHss";
+	
 	
 	public boolean checkToken() {
 		if (accessToken!=null)
@@ -48,7 +51,7 @@ public class DataHandler extends Application{
 	
 	public void initialize() {
 		Credential c = new Credential(CONSUMER_KEY, CONSUMER_SECRET, accessToken);
-		UserAccountManager uam = UserAccountManager.getInstance(c);
+		uam = UserAccountManager.getInstance(c);
 		try {
 			if (uam.verifyCredential()) {
 				timeline = Timeline.getInstance(uam);
@@ -95,8 +98,16 @@ public class DataHandler extends Application{
     	else return null;
     }
     
+    public UserAccountManager getUAM() {
+    	return uam;
+    }
+    
     public Tweet[] getTweets() {
     	return tweets;
+    }
+    
+    public Tweet[] getUserTweets() {
+    	return userTweets;
     }
     
     /**
@@ -156,6 +167,18 @@ public class DataHandler extends Application{
 			return false;			
 		}
 		return true;
+	}
+	
+	public void doUserSearch(String user) {
+		SearchDevice s = SearchDevice.getInstance();
+		Query q = QueryComposer.from(user);
+		try {
+			userTweets = s.searchTweets(q);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (LimitExceededException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void doSearch(Query q) {
