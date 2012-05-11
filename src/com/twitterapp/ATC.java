@@ -10,29 +10,23 @@ import android.os.Bundle;
 
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.twitterapp.R;
-import com.twitterapime.xauth.Token;
-import com.twitterapime.xauth.ui.OAuthDialogListener;
 /**
  * Main Activity
  * @author AHuMELLIHuK
  *
  */
-public class ATC extends Activity implements OAuthDialogListener {
+public class ATC extends Activity {
 	
 	private final int ACTIVITY_END = -1;	
 	private final int ACTIVITY_REFRESH = 0;
 	private final int TIMELINE_ACTIVITY = 0;
 	private final int SEARCH_ACTIVITY = 1;
 	private final int TWEET_ACTIVITY = 2;
-
-	private final String CONSUMER_KEY = "YP6fMhYF1QkPi0slhXiJA";
-	private final String CONSUMER_SECRET = "FWi27hEYJSTzpEq6ZxddMODNKOH9Qs4SyTL2DPbHss";
-	private final String CALLBACK_URL = "http://ahumellihuk.com";
+	private final int AUTHORISE_ACTIVITY = 3;
 
 	private DataHandler dataHandler;
 
@@ -73,40 +67,8 @@ public class ATC extends Activity implements OAuthDialogListener {
      * Launches webView to authorise user account
      */
     public void launchWeb() {
-    	WebView webView = new WebView(this);
-        setContentView(webView);
-        
-        WebViewOAuthDialogWrapper pageWrapper =
-        	new WebViewOAuthDialogWrapper(webView);
-        
-		pageWrapper.setConsumerKey(CONSUMER_KEY);
-		pageWrapper.setConsumerSecret(CONSUMER_SECRET);
-		pageWrapper.setCallbackUrl(CALLBACK_URL);
-		pageWrapper.setOAuthListener(this);
-		//
-		pageWrapper.login();  
-    }
-
-	/**
-	 * @see com.twitterapime.xauth.ui.OAuthDialogListener#onAuthorize(com.twitterapime.xauth.Token)
-	 */
-	public void onAuthorize(Token accessToken) {
-		dataHandler.storeToken(accessToken);
-		mainScreen();		
-	}
-
-	/**
-	 * @see com.twitterapime.xauth.ui.OAuthDialogListener#onAccessDenied(java.lang.String)
-	 */
-	public void onAccessDenied(String message) {
-		showMessage("Access denied!");
-	}
-
-	/**
-	 * @see com.twitterapime.xauth.ui.OAuthDialogListener#onFail(java.lang.String, java.lang.String)
-	 */
-	public void onFail(String error, String message) {
-		showMessage("Error by authenticating user!");
+    	Intent i = new Intent(ATC.this, AuthoriseActivity.class);
+		startActivityForResult(i, AUTHORISE_ACTIVITY);	
 	}	
 
 	/**
@@ -174,6 +136,10 @@ public class ATC extends Activity implements OAuthDialogListener {
 				break;
 			}
 			case TWEET_ACTIVITY: {
+				mainScreen();
+				break;
+			}
+			case AUTHORISE_ACTIVITY: {
 				mainScreen();
 				break;
 			}

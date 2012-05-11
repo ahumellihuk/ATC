@@ -41,6 +41,7 @@ public final class R {
         public static final int user=0x7f050019;
         public static final int username=0x7f05000f;
         public static final int usernameCheck=0x7f050010;
+        public static final int webView=0x7f05001a;
     }
     public static final class layout {
         public static final int detail=0x7f030000;
@@ -52,6 +53,7 @@ public final class R {
         public static final int search=0x7f030006;
         public static final int tweet=0x7f030007;
         public static final int userview=0x7f030008;
+        public static final int webview=0x7f030009;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
